@@ -98,11 +98,24 @@ class PostController extends Controller {
 	     if($post->status==1){
 	     	$post->status = 2;
 	     	$post->save();
-	     	$this->renderSuccess(array('message'=>'Deleted'));
+	     	$this->renderSuccess(array('message'=>'Deactivated'));
 	     }
 	     else{
-	     	$this->renderError('This id is already deleted.');
+	     	$this->renderError('This id is already Deactivated.');
 	     }
+    }
+
+
+    public function actionReactivate($id){
+    	$post = Post::model()->findByPk($id);
+    	if($post->status==2){
+    		$post->status = 1;
+	     	$post->save();
+	     	$this->renderSuccess(array('message'=>'reactivated'));	
+    	}
+    	else{
+	     	$this->renderError('This id is already active.');
+	    }
     }
 
 }
