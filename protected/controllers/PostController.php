@@ -93,4 +93,16 @@ class PostController extends Controller {
 			
 	}
 
+	public function actionDeactivate($id){
+	     $post = Post::model()->findByPk($id);
+	     if($post->status==1){
+	     	$post->status = 2;
+	     	$post->save();
+	     	$this->renderSuccess(array('message'=>'Deleted'));
+	     }
+	     else{
+	     	$this->renderError('This id is already deleted.');
+	     }
+    }
+
 }
