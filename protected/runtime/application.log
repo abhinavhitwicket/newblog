@@ -1,0 +1,57 @@
+2016/12/21 11:38:35 [error] [system.db.CDbCommand] CDbCommand::fetchAll() failed: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'newblog.tbl_migration' doesn't exist. The SQL statement executed was: SHOW FULL COLUMNS FROM `tbl_migration`.
+2016/12/21 11:38:37 [error] [php] include(m161221_060435_user.php): failed to open stream: No such file or directory (/home/abhinav/Projects/yii/framework/YiiBase.php:432)
+Stack trace:
+#0 /home/abhinav/Projects/yii/framework/cli/commands/MigrateCommand.php(459): spl_autoload_call()
+#1 /home/abhinav/Projects/yii/framework/cli/commands/MigrateCommand.php(414): MigrateCommand->instantiateMigration()
+#2 /home/abhinav/Projects/yii/framework/cli/commands/MigrateCommand.php(109): MigrateCommand->migrateUp()
+#3 unknown(0): MigrateCommand->actionUp()
+#4 /home/abhinav/Projects/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs()
+#5 /home/abhinav/Projects/yii/framework/console/CConsoleCommandRunner.php(71): MigrateCommand->run()
+#6 /home/abhinav/Projects/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#7 /home/abhinav/Projects/yii/framework/base/CApplication.php(185): CConsoleApplication->processRequest()
+#8 /home/abhinav/Projects/yii/framework/yiic.php(33): CConsoleApplication->run()
+#9 /home/abhinav/Projects/newblog/protected/yiic.php(7): require_once()
+#10 /home/abhinav/Projects/newblog/protected/yiic(4): require_once()
+
+2016/12/21 12:35:36 [error] [php] require_once(/home/abhinav/Projects/newblog/protected/migrations/m161221_061506_post.php): failed to open stream: No such file or directory (/home/abhinav/Projects/yii/framework/cli/commands/MigrateCommand.php:458)
+Stack trace:
+#0 /home/abhinav/Projects/yii/framework/cli/commands/MigrateCommand.php(145): MigrateCommand->migrateDown()
+#1 unknown(0): MigrateCommand->actionDown()
+#2 /home/abhinav/Projects/yii/framework/console/CConsoleCommand.php(172): ReflectionMethod->invokeArgs()
+#3 /home/abhinav/Projects/yii/framework/console/CConsoleCommandRunner.php(71): MigrateCommand->run()
+#4 /home/abhinav/Projects/yii/framework/console/CConsoleApplication.php(92): CConsoleCommandRunner->run()
+#5 /home/abhinav/Projects/yii/framework/base/CApplication.php(185): CConsoleApplication->processRequest()
+#6 /home/abhinav/Projects/yii/framework/yiic.php(33): CConsoleApplication->run()
+#7 /home/abhinav/Projects/newblog/protected/yiic.php(7): require_once()
+#8 /home/abhinav/Projects/newblog/protected/yiic(4): require_once()
+
+2016/12/21 12:36:38 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'post' already exists. The SQL statement executed was: CREATE TABLE `post` (
+	`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) UNSIGNED NOT NULL,
+	`title` varchar(255),
+	`content` varchar(255),
+	`status` TINYINT(1),
+	`created_at` int(11),
+	`updated_at` int(11),
+	PRIMARY KEY (id)
+) ENGINE=InnoDB.
+2016/12/21 12:38:04 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'post' already exists. The SQL statement executed was: CREATE TABLE `post` (
+	`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) UNSIGNED NOT NULL,
+	`title` varchar(255),
+	`content` varchar(255),
+	`status` TINYINT(1),
+	`created_at` int(11),
+	`updated_at` int(11),
+	PRIMARY KEY (id)
+) ENGINE=InnoDB.
+2016/12/21 12:39:38 [error] [system.db.CDbCommand] CDbCommand::execute() failed: SQLSTATE[42S01]: Base table or view already exists: 1050 Table 'post' already exists. The SQL statement executed was: CREATE TABLE `post` (
+	`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_id` int(11) UNSIGNED NOT NULL,
+	`title` varchar(255),
+	`content` varchar(255),
+	`status` TINYINT(1),
+	`created_at` int(11),
+	`updated_at` int(11),
+	PRIMARY KEY (id)
+) ENGINE=InnoDB.
