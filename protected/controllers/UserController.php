@@ -40,7 +40,7 @@ class UserController extends Controller {
     }
 
 
-   public function actionFeed($id) {
+    public function actionFeed($id) {
         $user = User::model()->findByPK($id);  
         $posts = $user->posts(array('order'=>'created_at DESC', 'limit'=>5)); 
         $posts_data = array();
@@ -49,4 +49,19 @@ class UserController extends Controller {
         }
         $this->renderSuccess(array('posts_data'=>$posts_data));
     }
+
+    public function actionSearchProfile($name){
+        $users = User::model()->findAllByAttributes(array('name'=>$name));
+        $users_profile = array();
+        if(!$users) {
+            $this->renderError('Name not found');
+        }
+            else{
+                foreach($users as $user){
+                $users_profile[] = array('user_id'=>$user->id, 'user_name'=>$user->name, 'email'=>$user->email);
+                }
+                $this->renderSuccess(array('users_profile'=>$users_profile));
+            }
+    }
+
 }
