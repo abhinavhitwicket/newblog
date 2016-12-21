@@ -27,8 +27,6 @@ class UserController extends Controller {
        }
     }
 
-
-
     public function actionProfile($id) {
         $user = User::model()->findbyPK($id);
         if(!$user) {
