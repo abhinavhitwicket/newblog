@@ -8,10 +8,10 @@ class CommentController extends Controller {
                 $this->renderSuccess(array('id'=>$comment->id));
             } else {
                 $this->renderError($this->getErrorMessageFromModelErrors($comment));
-              }
-        }   else{
-                $this->renderError('Please send post data!');
             }
+        }   else{
+            $this->renderError('Please send post data!');
+        }
     }  
 
 }

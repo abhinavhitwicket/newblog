@@ -22,17 +22,17 @@ class Like extends CActiveRecord{
 
 	public function rules() {
 		return array(
-							array('user_id, post_id', 'required'),
-							array('post_id, status, created_at, updated_at', 'numerical', 'integerOnly'=>true),
-							array('user_id', 'length', 'max'=>11),
-					);
+			array('user_id, post_id', 'required'),
+			array('post_id, status, created_at, updated_at', 'numerical', 'integerOnly'=>true),
+			array('user_id', 'length', 'max'=>11),
+			);
 	}
 
 	public function relations() {
 		return array(
 			'users' => array(self::BELONGS_TO,'User','user_id'),
- 			'posts' => array(self::BELONGS_TO,'Post','post_id'),
-		);
+			'posts' => array(self::BELONGS_TO,'Post','post_id'),
+			);
 	}
 
 	public function beforeSave() {

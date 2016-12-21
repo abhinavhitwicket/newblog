@@ -9,7 +9,7 @@
 /* @property integer $updated_at
 */
 class Comment extends CActiveRecord
- {
+{
 	const STATUS_ACTIVE = 1;
 	const STATUS_DEACTIVATED = 2;
 	public static function model($className=__CLASS__) {
@@ -22,19 +22,19 @@ class Comment extends CActiveRecord
 
 	public function rules() {
 		return array(
-							array('user_id', 'required'),
-							array('post_id, status, created_at, updated_at', 'numerical', 'integerOnly'=>true),
-							array('user_id', 'length', 'max'=>11),
-							array('create_comment', 'length', 'max'=>255),
-					);
+			array('user_id', 'required'),
+			array('post_id, status, created_at, updated_at', 'numerical', 'integerOnly'=>true),
+			array('user_id', 'length', 'max'=>11),
+			array('create_comment', 'length', 'max'=>255),
+			);
 	}
 
 	public function relations() {
 		return array(
-				'users' => array(self::BELONGS_TO,'User','user_id'),
- 				'posts' => array(self::BELONGS_TO,'Post','post_id'),
- 				
-		);
+			'users' => array(self::BELONGS_TO,'User','user_id'),
+			'posts' => array(self::BELONGS_TO,'Post','post_id'),
+			
+			);
 	}
 
 	public function beforeSave() {
