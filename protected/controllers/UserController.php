@@ -64,4 +64,29 @@ class UserController extends Controller {
             }
     }
 
+        public function actionDeactivate($id){
+        $users = User::model()->findByPk($id);
+        if($users->status==1){
+            $users->status = 2;
+            $users->save();
+            $this->renderSuccess(array('message'=>'User deactivated'));  
+        }
+        else{
+            $this->renderError('This User id is already deactivated.');
+        }
+    }
+
+    public function actionReactivate($id){
+        $users = User::model()->findByPk($id);
+        if($users->status==2){
+            $users->status = 1;
+            $users->save();
+            $this->renderSuccess(array('message'=>'User reactivated'));  
+        }
+        else{
+            $this->renderError('This User id is already active.');
+        }
+    }
+
+
 }
