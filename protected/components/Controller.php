@@ -10,10 +10,12 @@ class Controller extends CController {
 
     public function renderSuccess($data) {
         echo CJSON::encode(array_merge(array('status'=>'SUCCESS'), $data));
+        exit();
     }
 
     public function renderError($error_message) {
         echo CJSON::encode(array('status'=>'ERROR', 'message'=>$error_message));
+        exit();
     }
 
 }

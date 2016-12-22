@@ -2,23 +2,22 @@
 class PostController extends Controller {
 
 	public $_post;
+	public $_posts;
 
 	public function filters() {
 		return array(
-			'checkUser + view, comments, likes'
+			'checkPost + view, comments, likes, delete',
 			);
 	}
 
-	public function filterCheckUser($filterChain) {
+	public function filterCheckPost($filterChain) {
 		if(!isset($_GET['id'])) {
 			$this->renderError('Enter User ID.');
+		}else{
+			$this->_post = Post::model()->active()->findByPk($_GET['id']);
 		}
-		$this->_post = Post::model()->active()->findByPk($_GET['id']);
 		$filterChain->run();
 	}
-
-
-
 
 	public function actionCreate() {
 		if(isset($_POST['Post'])) {
@@ -33,20 +32,6 @@ class PostController extends Controller {
 		}
 	}
 
-	public function actionSearch($str){
-		$posts = Post::model()->findAll(array('condition'=>"content LIKE :str", 'params'=>array('str'=>"%$str%")));
-		if($posts){
-			$posts_data = array();
-			foreach ($posts as $post) {
-				$posts_data[] = array('id'=>$post->id, 'content'=>$post->content);
-			}
-			$this->renderSuccess(array('id'=>$post->id, 'posts_data'=>$posts_data));
-		} 	else {
-			$this->renderError('No matches found!');
-		} 
-
-	}
-
 	public function actionView($id) {
 		if(!$this->_post){
 			$this->renderError('This id does not exists');
@@ -56,24 +41,34 @@ class PostController extends Controller {
 		}
 	}
 
+	public function actionSearch($str){		
+		$this->_posts = Post::model()->active()->findAll(array('condition'=>"content LIKE :str",'params'=>array('str'=>"%$str%")));
+		if($this->_posts){
+			$posts_data = array();
+			foreach ($this->_posts as $post) {
+				$posts_data += array('id'=>$post->id,'content'=>$post->content);
+			}
+			$this->renderSuccess(array('posts_data'=>$posts_data));
+		} 	
+		else {
+			$this->renderError('No matches found!');
+		} 
+	}
 	
 	public function actionComments($id) {
-		
-		if(!$this->_post)
-		{
+		if(!$this->_post){
 			$this->renderError('Post ID does not exist.');
 		}
 		else {
 			$comments = $this->_post->comments;
-			$no_of_comments = $this->_post->comments_count;
-			echo "$no_of_comments different comment(s) about this post have been posted.<br>";
+			$no_of_comments = $this->_post->comments_count;		
+			$posts_data = array();
 			foreach ($comments as $comment) {
-				$this->renderSuccess(array('user_id'=>$this->$comment->user_id,'content'=>$this->$comment->content));
-				echo "<br>";
+				$posts_data[] = array('user_id'=>$comment->user_id,'comment'=>$comment->create_comment);
 			}
+			$this->renderSuccess(array('comment_info'=>"This post has received $no_of_comments comment(s).<br>",'post'=>$posts_data));
 		}
 	}
-
 
 	public function actionLikes($id) {
 		
@@ -83,38 +78,47 @@ class PostController extends Controller {
 		else{
 			$likes = $this->_post->likes;
 			$no_of_likes = $this->_post->likes_count;
-			echo "This post has received $no_of_likes like(s).<br>";
+			$posts_data = array();
+			foreach ($likes as $like) {
+				$posts_data[] = array('user_id'=>$like->user_id);
+			}
+			$this->renderSuccess(array('like_info'=>"This post has received $no_of_likes like(s).<br>", 'post'=>$posts_data));
+
+
 			
 			foreach ($likes as $like) {
 				$this->renderSuccess(array('user_id'=>$this->$like->user_id));
 				echo "<br>";
 			}
 		}
-		
 	}
 
-	public function actionDeactivate($id){
-		$post = Post::model()->findByPk($id);
-		if($post->status==1){
-			$post->status = 2;
-			$post->save();
-			$this->renderSuccess(array('message'=>'Deactivated'));
+	public function actionDelete($id) {
+		if(!$this->_post)
+		{
+			$this->renderError('Post ID does not exist.');
 		}
-		else{
-			$this->renderError('This id is already Deactivated.');
+		else {       
+			$this->_post->deactivate();
+			$this->_post->save();
+			$this->renderSuccess(array('success'=>"Post deleted."));
 		}
 	}
 
-
-	public function actionReactivate($id){
+	public function actionRestore($id){
 		$post = Post::model()->findByPk($id);
-		if($post->status==2){
-			$post->status = 1;
-			$post->save();
-			$this->renderSuccess(array('message'=>'reactivated'));	
+		if(!$post) {
+			$this->renderError('Post ID does not exist.');
 		}
-		else{
-			$this->renderError('This id is already active.');
+		else {       
+			if($post->status!=Post::STATUS_ACTIVE){
+				$post->activate();
+				$post->save();
+				$this->renderSuccess(array('message'=>"Post restored."));
+			}
+			else {
+				$this->renderSuccess(array('message'=>"Post already exists."));
+			}
 		}
 	}
 

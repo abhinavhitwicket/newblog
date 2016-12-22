@@ -9,8 +9,7 @@
 /* @property integer $updated_at
 */
 
-class Post extends CActiveRecord
-{
+class Post extends CActiveRecord {
 	
 	const STATUS_ACTIVE = 1;
 	const STATUS_DEACTIVATED = 2;
@@ -36,16 +35,28 @@ class Post extends CActiveRecord
 			'users' => array(self::BELONGS_TO,'User','user_id'),
 			'comments' => array(self::HAS_MANY,'Comment','post_id'),
 			'likes' => array(self::HAS_MANY,'Like','post_id'),
-			'comments_count' => array(self::STAT, 'Comment', 'user_id'),
-			'likes_count' => 	array(self::STAT, 'Like', 'user_id'),
+			'comments_count' => array(self::STAT, 'Comment', 'post_id'),
+			'likes_count' => 	array(self::STAT, 'Like', 'post_id'),
 			);
 	}
 
 	public function scopes() {
 		return array(
-			'active' => array('condition'=>'t.status = 1'),
+			'active'=>array('condition'=>"status = :status_active", 'params'=>array('status_active'=>self::STATUS_ACTIVE)),
+			'deactivated'=>array('condition'=>"status = :status_deactivated", 'params'=>array('status_deactivated'=>self::STATUS_DEACTIVATED)),
 			);
 	}
+
+	public function deactivate() { 
+		$this->status = self::STATUS_DEACTIVATED;
+		$this->save();
+	}
+
+	public function activate() {
+		$this->status = self::STATUS_ACTIVE;
+		$this->save();
+	}
+
 
 	public function beforeSave() {
 		if($this->isNewRecord) { 

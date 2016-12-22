@@ -35,36 +35,27 @@ class UserController extends Controller {
 		}
 	}
 
-
-
-
-	public function actionLogin($id) {
-
-		
-		if(!$this->_user) {
-			$this->renderError('ERROR! ID not Found');
-		}
-		else {
+	public function actionLogin($id) {	
+		if($this->_user) {
 			$this->renderSuccess(array('user_id'=>$this->_user->id));
 		}
 	}
 
 	public function actionProfile($id) {
+		if($this->_user) {
+			$this->renderSuccess(array('id'=>$this->_user->id, 'name'=>$this->_user->name, 'email'=>$this->_user->email));
+		}
 		
-		if(!$this->_user) {
-			$this->renderError('ERROR! Profile not found');
-		}
-		else {
-			$this->renderSuccess(array('user_id'=>$this->_user->id, 'name'=>$this->_user->name, 'email'=>$this->_user->email));
-		}
 	}
-
 
 	public function actionFeed($id) { 
 		$posts = $this->_user->posts(array('order'=>'created_at DESC', 'limit'=>5)); 
+		if(!$posts){
+			$this->renderError('No Recent Posts of yours');
+		}
 		$posts_data = array();
 		foreach ($posts as $post) {
-			$posts_data[] = array('id'=>$this->_user->id, 'content'=>$this->_user->posts);
+			$posts_data[] = array('id'=>$post->id, 'content'=>$post->content);
 		}
 		$this->renderSuccess(array('posts_data'=>$posts_data));
 	}

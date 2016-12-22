@@ -9,7 +9,7 @@
 /* @property integer $updated_at
 */
 
-class User extends CActiveRecord{
+class User extends CActiveRecord {
 
 	const STATUS_ACTIVE = 1;
 	const STATUS_DEACTIVATED = 2;
@@ -41,13 +41,18 @@ class User extends CActiveRecord{
 
 			);
 	}
-
 	public function scopes() {
 		return array(
-			'active' => array('condition'=>'t.status = 1'),
+			'active'=>array('condition'=>"status = :status_active", 'params'=>array('status_active'=>self::STATUS_ACTIVE)),
+			'deactivated'=>array('condition'=>"status = :status_deactivated", 'params'=>array('status_deactivated'=>self::STATUS_DEACTIVATED)),
 			);
 	}
-
+	/*public function scopes() {
+		return array(
+			'active' => array('condition'=>"{$this->tableAlias}.status = :active", 'params'=>array('active'=>self::STATUS_ACTIVE)),
+			);
+	}
+*/
 	public function beforeSave() {
 		if($this->isNewRecord) { 
 			$this->created_at = time();

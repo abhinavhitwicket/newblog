@@ -8,7 +8,7 @@
 /* @property integer $updated_at
 */
 
-class Like extends CActiveRecord{
+class Like extends CActiveRecord {
 
 	const STATUS_ACTIVE = 1;
 	const STATUS_DEACTIVATED = 2;

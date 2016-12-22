@@ -8,8 +8,7 @@
 /* @property integer $created_at
 /* @property integer $updated_at
 */
-class Comment extends CActiveRecord
-{
+class Comment extends CActiveRecord {
 	const STATUS_ACTIVE = 1;
 	const STATUS_DEACTIVATED = 2;
 	public static function model($className=__CLASS__) {
