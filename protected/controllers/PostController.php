@@ -11,7 +11,7 @@ class PostController extends Controller {
 
 	public function filterCheckUser($filterChain) {
 		if(!isset($_GET['id'])) {
-			//ERROR
+			$this->renderError('Enter User ID.');
 		}
 		$this->_post = Post::model()->active()->findByPk($_GET['id']);
 		$filterChain->run();

@@ -7,6 +7,7 @@
 /* @property integer $created_at
 /* @property integer $updated_at
 */
+
 class Like extends CActiveRecord{
 
 	const STATUS_ACTIVE = 1;

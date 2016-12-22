@@ -1,6 +1,27 @@
 <?php
 class UserController extends Controller {
 
+	public $_user;
+
+	public function filters() {
+		return array(
+			'checkUser + login, profile, feed, deactivate' 
+			);
+	}
+
+	public function filterCheckUser($filterChain) {
+		if(!$_GET['id']) {
+			$this->renderError('Enter User ID.');
+		}
+		else {
+			$this->_user = User::model()->active()->findByPk($_GET['id']);
+			if(!$this->_user)
+				$this->renderError("Invalid data");
+		}
+		$filterChain->run();
+	}
+
+
 	public function actionCreate() {
 		if(isset($_POST['User'])) {
 			$user = User::create($_POST['User']);
@@ -18,32 +39,32 @@ class UserController extends Controller {
 
 
 	public function actionLogin($id) {
-		$user = User::model()->findbyPK($id);
-		if(!$user) {
+
+		
+		if(!$this->_user) {
 			$this->renderError('ERROR! ID not Found');
 		}
 		else {
-			$this->renderSuccess(array('user_id'=>$user->id));
+			$this->renderSuccess(array('user_id'=>$this->_user->id));
 		}
 	}
 
 	public function actionProfile($id) {
-		$user = User::model()->findbyPK($id);
-		if(!$user) {
+		
+		if(!$this->_user) {
 			$this->renderError('ERROR! Profile not found');
 		}
 		else {
-			$this->renderSuccess(array('user_id'=>$user->id, 'name'=>$user->name, 'email'=>$user->email));
+			$this->renderSuccess(array('user_id'=>$this->_user->id, 'name'=>$this->_user->name, 'email'=>$this->_user->email));
 		}
 	}
 
 
-	public function actionFeed($id) {
-		$user = User::model()->findByPK($id);  
-		$posts = $user->posts(array('order'=>'created_at DESC', 'limit'=>5)); 
+	public function actionFeed($id) { 
+		$posts = $this->_user->posts(array('order'=>'created_at DESC', 'limit'=>5)); 
 		$posts_data = array();
 		foreach ($posts as $post) {
-			$posts_data[] = array('id'=>$user->id, 'content'=>$user->posts);
+			$posts_data[] = array('id'=>$this->_user->id, 'content'=>$this->_user->posts);
 		}
 		$this->renderSuccess(array('posts_data'=>$posts_data));
 	}
@@ -63,14 +84,12 @@ class UserController extends Controller {
 	}
 
 	public function actionDeactivate($id){
-		$users = User::model()->findByPk($id);
-		if($users->status==1){
-			$users->status = 2;
-			$users->save();
+		if(!$this->_user){
+			$this->renderError('Id does not exists');
+		} else{
+			$this->_user->status = 2;
+			$this->_user->save();
 			$this->renderSuccess(array('message'=>'User deactivated'));  
-		}
-		else{
-			$this->renderError('This User id is already deactivated.');
 		}
 	}
 
