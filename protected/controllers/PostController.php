@@ -15,6 +15,10 @@ class PostController extends Controller {
 			$this->renderError('Enter User ID.');
 		}else{
 			$this->_post = Post::model()->active()->findByPk($_GET['id']);
+			if(!$this->_post){
+				$this->renderError('This id does not exists');
+			}
+
 		}
 		$filterChain->run();
 	}
@@ -33,12 +37,7 @@ class PostController extends Controller {
 	}
 
 	public function actionView($id) {
-		if(!$this->_post){
-			$this->renderError('This id does not exists');
-		}
-		else {
-			$this->renderSuccess(array('id'=>$this->_post->content));
-		}
+		$this->renderSuccess(array( 'id'=>$this->_post->id,'title'=>$this->_post->title,'post'=>$this->_post->content));
 	}
 
 	public function actionSearch($str){		
@@ -56,40 +55,29 @@ class PostController extends Controller {
 	}
 	
 	public function actionComments($id) {
-		if(!$this->_post){
-			$this->renderError('Post ID does not exist.');
+		
+		$comments = $this->_post->comments;
+		$no_of_comments = $this->_post->comments_count;		
+		$comments_data = array();
+		foreach ($comments as $comment) {
+			$comments_data[] = array('user_id'=>$comment->user_id,'comment'=>$comment->create_comment);
 		}
-		else {
-			$comments = $this->_post->comments;
-			$no_of_comments = $this->_post->comments_count;		
-			$posts_data = array();
-			foreach ($comments as $comment) {
-				$posts_data[] = array('user_id'=>$comment->user_id,'comment'=>$comment->create_comment);
-			}
-			$this->renderSuccess(array('comment_info'=>"This post has received $no_of_comments comment(s).<br>",'post'=>$posts_data));
-		}
+		$this->renderSuccess(array('comment_info'=>"This post has received $no_of_comments comment(s).<br>",'Comments'=>$comments_data));
+		
 	}
 
 	public function actionLikes($id) {
 		
-		if(!$this->_post){
-			$this->renderError('Post ID does not exist.');
+		
+		$likes = $this->_post->likes;
+		$no_of_likes = $this->_post->likes_count;
+		$likes_data = array();
+		foreach ($likes as $like) {
+			$likes_data[] = array('user_id'=>$like->user_id);
 		}
-		else{
-			$likes = $this->_post->likes;
-			$no_of_likes = $this->_post->likes_count;
-			$posts_data = array();
-			foreach ($likes as $like) {
-				$posts_data[] = array('user_id'=>$like->user_id);
-			}
-			$this->renderSuccess(array('like_info'=>"This post has received $no_of_likes like(s).<br>", 'post'=>$posts_data));
-
-
-			
-			foreach ($likes as $like) {
-				$this->renderSuccess(array('user_id'=>$this->$like->user_id));
-				echo "<br>";
-			}
+		$this->renderSuccess(array('like_info'=>"This post has received $no_of_likes like(s).<br>", 'post'=>$likes_data));
+		foreach ($likes as $like) {
+			$this->renderSuccess(array('user_id'=>$this->$like->user_id));
 		}
 	}
 
@@ -106,14 +94,13 @@ class PostController extends Controller {
 	}
 
 	public function actionRestore($id){
-		$post = Post::model()->findByPk($id);
+		$post = Post::model()->deactivated()->findByPk($id);
 		if(!$post) {
 			$this->renderError('Post ID does not exist.');
 		}
 		else {       
 			if($post->status!=Post::STATUS_ACTIVE){
 				$post->activate();
-				$post->save();
 				$this->renderSuccess(array('message'=>"Post restored."));
 			}
 			else {
