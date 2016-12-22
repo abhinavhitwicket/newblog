@@ -14,7 +14,7 @@ class PostController extends Controller {
 		if(!isset($_GET['id'])) {
 			$this->renderError('Enter User ID.');
 		}else{
-			$this->_post = Post::model()->active()->findByPk($_GET['id']);
+			$this->_post = Post::model()->active()->findByPk($_GET['id']); //Check null?
 		}
 		$filterChain->run();
 	}
@@ -37,7 +37,7 @@ class PostController extends Controller {
 			$this->renderError('This id does not exists');
 		}
 		else {
-			$this->renderSuccess(array('id'=>$this->_post->content));
+			$this->renderSuccess(array('id'=>$this->_post->content)); //Sending only content and that too in the name of id?
 		}
 	}
 
@@ -56,16 +56,17 @@ class PostController extends Controller {
 	}
 	
 	public function actionComments($id) {
-		if(!$this->_post){
+		if(!$this->_post){ //Remove this
 			$this->renderError('Post ID does not exist.');
 		}
 		else {
 			$comments = $this->_post->comments;
 			$no_of_comments = $this->_post->comments_count;		
-			$posts_data = array();
+			$posts_data = array(); //Naming
 			foreach ($comments as $comment) {
 				$posts_data[] = array('user_id'=>$comment->user_id,'comment'=>$comment->create_comment);
 			}
+			//What is `post` key there?
 			$this->renderSuccess(array('comment_info'=>"This post has received $no_of_comments comment(s).<br>",'post'=>$posts_data));
 		}
 	}
@@ -106,14 +107,14 @@ class PostController extends Controller {
 	}
 
 	public function actionRestore($id){
-		$post = Post::model()->findByPk($id);
+		$post = Post::model()->findByPk($id); //Add deactivate scope
 		if(!$post) {
 			$this->renderError('Post ID does not exist.');
 		}
 		else {       
 			if($post->status!=Post::STATUS_ACTIVE){
 				$post->activate();
-				$post->save();
+				$post->save(); //Why save here? Repeated..
 				$this->renderSuccess(array('message'=>"Post restored."));
 			}
 			else {
