@@ -41,18 +41,19 @@ class User extends CActiveRecord {
 
 			);
 	}
-	public function scopes() {
+/*	public function scopes() {
 		return array(
 			'active'=>array('condition'=>"status = :status_active", 'params'=>array('status_active'=>self::STATUS_ACTIVE)),
 			'deactivated'=>array('condition'=>"status = :status_deactivated", 'params'=>array('status_deactivated'=>self::STATUS_DEACTIVATED)),
 			);
-	}
-	/*public function scopes() {
+	} */
+	public function scopes() {
 		return array(
 			'active' => array('condition'=>"{$this->tableAlias}.status = :active", 'params'=>array('active'=>self::STATUS_ACTIVE)),
+			'deactivated'=>array('condition'=>"{$this->tableAlias}.status = :status_deactivated", 'params'=>array('status_deactivated'=>self::STATUS_DEACTIVATED)),
 			);
 	}
-*/
+
 	public function beforeSave() {
 		if($this->isNewRecord) { 
 			$this->created_at = time();

@@ -21,6 +21,31 @@ class UserController extends Controller {
 		$filterChain->run();
 	}
 
+	public function actionGrid() {
+		$dataProvider = new CActiveDataProvider('User');
+		$this->widget('zii.widgets.grid.CGridView',
+			array(
+				'dataProvider'=>$dataProvider,
+				)
+			);
+	}
+
+	public function actionToughGrid() {
+		
+		$dataProvider = new CActiveDataProvider('User');
+		
+		
+		$this->widget('zii.widgets.grid.CGridView', array(
+			'dataProvider'=>$dataProvider,
+			'columns'=>array(
+				'id',      
+				'name',  
+				'email:html', 
+				),
+			));
+
+	}
+
 
 	public function actionCreate() {
 		if(isset($_POST['User'])) {

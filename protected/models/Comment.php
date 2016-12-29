@@ -36,6 +36,13 @@ class Comment extends CActiveRecord {
 			);
 	}
 
+	public function scopes() {
+		return array(
+			'active' => array('condition'=>"{$this->tableAlias}.status = :active", 'params'=>array('active'=>self::STATUS_ACTIVE)),
+			'deactivated'=>array('condition'=>"{$this->tableAlias}.status = :status_deactivated", 'params'=>array('status_deactivated'=>self::STATUS_DEACTIVATED)),
+			);
+	}
+	
 	public function beforeSave() {
 		if($this->isNewRecord) { 
 			$this->status = self::STATUS_ACTIVE;
